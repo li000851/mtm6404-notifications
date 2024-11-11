@@ -1,34 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import notificationsData from "./notifications";
+
+function Notification({ children, onClear }) {
+  return (
+    <div className="notification">
+      {children}
+      <button onClick={onClear}>Clear</button>
+    </div>
+  );
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [notifications, setNotifications] = useState(notificationsData);
+
+  const clearNotification = (id) => {
+    setNotifications(notifications.filter((n) => n.id !== id));
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+  };
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h1>Notifications ({notifications.length})</h1>
+      <div className="notifications-list">
+        {notifications.map((notification) => (
+          <Notification
+            key={notification.id}
+            onClear={() => clearNotification(notification.id)}
+          >
+            <h3>{notification.title}</h3>
+            <p>{notification.message}</p>
+          </Notification>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button
+        onClick={clearAllNotifications}
+        disabled={notifications.length === 0}
+        className="clear-all-btn"
+      >
+        Clear All
+      </button>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
